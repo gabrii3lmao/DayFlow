@@ -91,7 +91,8 @@ input[type="number"] {
 
 /* Grupo da duração com leve destaque sem centralizar tudo */
 .duration-group input {
-  align-self: flex-start;
+  align-self: center;
+  width: 22rem;
 }
 
 /* Botão */

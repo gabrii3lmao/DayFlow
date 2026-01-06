@@ -1,0 +1,87 @@
+<h2 class="page-title">Minha Semana</h2>
+
+<div class="days-column">
+  <% days.forEach(day => { %>
+
+    <section class="day-big-card" data-collapsible>
+
+      <!-- HEADER DO DIA -->
+      <header class="day-title">
+        <button class="day-toggle" type="button">
+          <h3><%= day.weekday.toUpperCase() %></h3>
+          <span class="chevron">▾</span>
+        </button>
+      </header>
+
+      <!-- CONTEÚDO DO DIA -->
+      <div class="day-content">
+
+        <!-- LISTA DE ATIVIDADES -->
+        <div class="activities">
+
+          <% if (day.activities.length === 0) { %>
+
+            <p class="empty">Nenhuma atividade ainda</p>
+
+          <% } else { %>
+
+            <% day.activities.forEach(activity => { %>
+
+              <div
+                class="activity-row <%= activity.completed ? 'completed' : '' %>"
+                data-day-id="<%= day._id %>"
+                data-activity-id="<%= activity._id %>"
+              >
+
+                <!-- NOME -->
+                <span class="activity-name">
+                  <%= activity.title %>
+                </span>
+
+                <!-- CONTROLES -->
+                <div class="activity-controls">
+                  <span class="activity-duration">
+                    <%= activity.durationMin %>:00
+                  </span>
+
+                  <button class="btn-start">Iniciar</button>
+                  <button class="btn-stop">Parar</button>
+                </div>
+
+                <!-- MENU CONTEXTUAL -->
+                <div class="more-menu-container">
+                  <button class="activity-more" type="button">⋯</button>
+
+                  <div class="activity-options-menu hidden">
+                    <button class="btn-delete" type="button">
+                      Deletar atividade
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+
+            <% }) %>
+
+          <% } %>
+
+        </div>
+
+        <!-- FOOTER DO DIA -->
+        <footer class="day-footer">
+          <a
+            href="/days/<%= day._id %>/activities/new"
+            class="add-btn"
+          >
+            + Nova atividade
+          </a>
+        </footer>
+
+      </div>
+    </section>
+
+  <% }) %>
+</div>
+
+<script src="/js/timer.js"></script>
+<script src="/js/moreMenus.js"></script>

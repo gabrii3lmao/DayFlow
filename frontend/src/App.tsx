@@ -1,35 +1,70 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useState } from "react";
 
-function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+interface Activity {
+  _id: string;
+  title: string;
+  durationMin: number;
+  completed: boolean;
 }
 
-export default App
+interface Day {
+  _id: string;
+  weekday: string;
+  activities: Activity[];
+}
+
+function App() {
+  const [days, setDays] = useState<Day[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchDays() {
+      try {
+        const res = await fetch("/api");
+        if (!res.ok) {
+          throw new Error("Failed to fetch days");
+        }
+
+        const data = await res.json();
+        setDays(data);
+      } catch (err) {
+        console.log(err);
+        setError("Erro ao carregar dados do servidor");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchDays();
+  }, []);
+
+  if (loading) return <p>Carregando…</p>;
+  if (error) return <p>{error}</p>;
+
+  return (
+    <main style={{ padding: "2rem" }}>
+      <h1>Atividades da Semana</h1>
+
+      {days.map((day) => (
+        <section key={day._id} style={{ marginBottom: "1.5rem" }}>
+          <h2>{day.weekday}</h2>
+
+          {day.activities.length === 0 ? (
+            <p>Nenhuma atividade</p>
+          ) : (
+            <ul>
+              {day.activities.map((activity) => (
+                <li key={activity._id}>
+                  {activity.title} — {activity.durationMin} min
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      ))}
+    </main>
+  );
+}
+
+export default App;

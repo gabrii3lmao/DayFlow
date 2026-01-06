@@ -1,6 +1,7 @@
-const Day = require("./models/dayModel");
+import Day from "./models/dayModel.js";
+import type { Weekday } from "./models/dayModel.js";
 
-const daysOfWeek = [
+const daysOfWeek: Weekday[] = [
   "Segunda",
   "Terça",
   "Quarta",
@@ -10,8 +11,7 @@ const daysOfWeek = [
   "Domingo",
 ];
 
-
-async function seedDays() {
+export default async function seedDays(): Promise<void> {
   for (const weekday of daysOfWeek) {
     await Day.updateOne(
       { weekday },
@@ -20,5 +20,3 @@ async function seedDays() {
     );
   }
 }
-
-module.exports = seedDays;
